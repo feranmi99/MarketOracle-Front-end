@@ -13,21 +13,30 @@ export default function RegisterPage() {
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  async function handleRegister({ email, password, username }: { email: string; password: string; username: string }) {
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await register(email, password, username);
-      // Auto-login after successful registration
-      const loginRes = await login(email, password);
-      localStorage.setItem('token', loginRes.access_token);
-      router.push('/dashboard');
-    } catch (e: any) {
+  async function handleRegister({ email, password, username }) {
+  setLoading(true);
+  setError(null);
+
+  try {
+    const res = await register(email, password, username);
+
+    // auto login
+    const loginRes = await login(email, password);
+    localStorage.setItem('token', loginRes.access_token);
+
+    router.push('/dashboard');
+
+  } catch (e: any) {
+    if (Array.isArray(e?.detail)) {
+      setError(e.detail[0].msg);
+    } else {
       setError(e?.detail || 'Registration failed. Please try again.');
-    } finally {
-      setLoading(false);
     }
+  } finally {
+    setLoading(false);
   }
+}
+
 
   async function login(email: string, password: string) {
     try {
