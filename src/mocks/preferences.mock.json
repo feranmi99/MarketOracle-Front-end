@@ -1,0 +1,11 @@
+{
+  "preferences": {
+    "default_pair": "BTCUSDT",
+    "default_timeframe": "1h",
+    "default_trade_amount": 100.0,
+    "risk_profile": "balanced",
+    "indicators_of_interest": ["RSI", "MACD", "EMA"],
+    "auto_execute": false
+  },
+  "daily_trade_limit": 7
+}

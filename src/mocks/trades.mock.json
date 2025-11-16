@@ -1,0 +1,16 @@
+{
+  "items": [
+    {
+      "_id": "6565c8e3d4b2f5a6b7c8d9e0",
+      "user_id": "64a8b0b5f4c2d8e9f0a1b2c3",
+      "pair": "BTCUSDT",
+      "timeframe": "multi",
+      "trade_amount": 100,
+      "decision": "LONG",
+      "confidence": 86,
+      "reason": "4h uptrend...",
+      "analysis_payload": {},
+      "created_at": "2025-11-13T12:34:56"
+    }
+  ]
+}

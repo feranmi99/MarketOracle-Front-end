@@ -1,0 +1,26 @@
+{
+  "supported_indicators": [
+    "RSI (Relative Strength Index)",
+    "MACD (Moving Average Convergence Divergence)",
+    "EMA (Exponential Moving Average)",
+    "ADX (Average Directional Index)",
+    "Support & Resistance Levels",
+    "Fibonacci Retracement Levels",
+    "Volume Analysis",
+    "Bollinger Bands",
+    "Stochastic Oscillator",
+    "ATR (Average True Range)"
+  ],
+  "analysis_features": [
+    "Holy Grail Strategy (Linda Raschke)",
+    "Multiple Indicator Confirmation (min 3 agreeing)",
+    "Risk-Reward Ratio Analysis (min 1:2)",
+    "Confidence Scoring (min 70%)",
+    "Multi-Timeframe Alignment (4h, 1h, 15m)",
+    "Clear Entry Confirmation Methods",
+    "Timeframe-Aware Recommendations",
+    "Dynamic Stop Loss Calculation",
+    "Multiple Take Profit Levels",
+    "Optional Entry Amount Tracking"
+  ]
+}
