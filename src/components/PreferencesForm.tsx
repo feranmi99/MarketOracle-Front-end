@@ -17,12 +17,16 @@ export default function PreferencesForm({ preferences, onSave, loading }: Prefer
   const [form, setForm] = useState(preferences);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) {
-    const { name, value, type, checked } = e.target;
-    setForm(f => ({
-      ...f,
-      [name]: type === 'checkbox' ? checked : value,
-    }));
-  }
+  const { name, value, type } = e.target;
+
+  setForm(f => ({
+    ...f,
+    [name]: type === "checkbox"
+      ? (e.target as HTMLInputElement).checked
+      : value,
+  }));
+}
+
 
   return (
     <form
