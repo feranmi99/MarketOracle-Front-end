@@ -1,7 +1,10 @@
 // API client with mock/demo mode and error handling
 
+import baseUrl from '@/components/BaseUrl';
+
 const USE_MOCKS = process.env.NEXT_PUBLIC_USE_MOCKS === 'true';
 const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000/api';
+
 
 async function fetchJson(url: string, options: RequestInit = {}) {
   let res;
@@ -17,15 +20,11 @@ async function fetchJson(url: string, options: RequestInit = {}) {
   return res.json();
 }
 
-export async function analyzeTrade(params: { pair: string; trade_amount?: number; note?: string; token?: string }) {
-  if (USE_MOCKS) {
-    return import('../mocks/analysis.mock.json').then(m => m.default);
-  }
-  const { pair, trade_amount, note, token } = params;
-  const q = new URLSearchParams({ pair, ...(trade_amount ? { trade_amount: String(trade_amount) } : {}), ...(note ? { note } : {}) });
-  return fetchJson(`${API_BASE}/trades/analyze?${q.toString()}`, {
+export async function analyzeTrade(params: { pair: string }) {
+  const { pair } = params;
+  const q = new URLSearchParams({ pair });
+  return fetchJson(`${baseUrl}/analyze-holy-grail?${q.toString()}`, {
     method: 'POST',
-    headers: { Authorization: `Bearer ${token}` },
   });
 }
 

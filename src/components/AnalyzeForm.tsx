@@ -75,8 +75,8 @@ export default function AnalyzeForm({
             type="button"
             onClick={() => setIsOpen(!isOpen)}
             className={`w-full px-4 py-3 bg-slate-50 border-2 rounded-xl text-left transition-all duration-200 flex items-center justify-between ${isOpen
-                ? 'border-blue-500 ring-2 ring-blue-200 bg-white'
-                : 'border-slate-200 hover:border-slate-300'
+              ? 'border-blue-500 ring-2 ring-blue-200 bg-white'
+              : 'border-slate-200 hover:border-slate-300'
               } ${loading ? 'opacity-50 cursor-not-allowed' : 'cursor-pointer'}`}
             disabled={loading}
           >
@@ -126,8 +126,8 @@ export default function AnalyzeForm({
                         type="button"
                         onClick={() => handleSelectPair(pair)}
                         className={`w-full text-left px-4 py-3 z-100 flex items-center justify-between transition-all duration-200 ${selectedPair === pair
-                            ? 'bg-blue-50 text-blue-700'
-                            : 'hover:bg-slate-50 text-slate-700'
+                          ? 'bg-blue-50 text-blue-700'
+                          : 'hover:bg-slate-50 text-slate-700'
                           }`}
                         whileHover={{ backgroundColor: selectedPair === pair ? '#dbeafe' : '#f8fafc' }}
                       >
@@ -155,46 +155,6 @@ export default function AnalyzeForm({
               </motion.div>
             )}
           </AnimatePresence>
-        </div>
-      </div>
-
-      {/* Trade Amount Input */}
-      <div>
-        <label className="block text-sm font-semibold text-slate-700 mb-3">
-          <DollarSign className="inline w-4 h-4 mr-1" />
-          Trade Amount (USD)
-          <span className="text-slate-400 text-xs font-normal ml-2">Optional</span>
-        </label>
-        <div className="relative">
-          <input
-            type="number"
-            value={tradeAmount}
-            onChange={(e) => setTradeAmount(e.target.value)}
-            placeholder="Enter amount in USD"
-            className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200"
-            disabled={loading}
-          />
-          <DollarSign className="absolute left-3 top-1/2 transform -translate-y-1/2 text-slate-400 w-4 h-4" />
-        </div>
-      </div>
-
-      {/* Trading Notes */}
-      <div>
-        <label className="block text-sm font-semibold text-slate-700 mb-3">
-          <FileText className="inline w-4 h-4 mr-1" />
-          Trading Notes
-          <span className="text-slate-400 text-xs font-normal ml-2">Optional</span>
-        </label>
-        <div className="relative">
-          <textarea
-            value={note}
-            onChange={(e) => setNote(e.target.value)}
-            placeholder="Add any additional context or trading notes..."
-            rows={3}
-            className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all duration-200 resize-none"
-            disabled={loading}
-          />
-          <FileText className="absolute left-3 top-3 text-slate-400 w-4 h-4" />
         </div>
       </div>
 
