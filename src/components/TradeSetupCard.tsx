@@ -1,25 +1,36 @@
 "use client"
 
 import { motion } from 'framer-motion';
-import { ArrowUp, ArrowDown, Target, Shield, Trophy, BarChart3 } from 'lucide-react';
+import { ArrowUp, ArrowDown, Target, Shield, Trophy, BarChart3, DollarSign } from 'lucide-react';
 
 interface TradeSetupCardProps {
-  entry?: number;
-  stop_loss?: number;
-  take_profit?: number[];
-  risk_reward_ratio?: string;
+  tradeSetup: {
+    entry?: number;
+    stop_loss?: number;
+    take_profit?: number[];
+    risk_reward_ratio?: string;
+    advanced_insights?: any;
+  };
+  tradeRecommendation: {
+    action: string;
+    reason: string;
+    confidence: string;
+    entry_price?: number;
+    stop_loss?: number;
+    take_profit?: number[];
+    risk_reward?: string;
+    setup_details?: any;
+  };
 }
 
 export default function TradeSetupCard({
-  entry,
-  stop_loss,
-  take_profit,
-  risk_reward_ratio
+  tradeSetup,
+  tradeRecommendation
 }: TradeSetupCardProps) {
+  const hasValidData = tradeSetup?.entry !== undefined && tradeSetup?.stop_loss !== undefined;
+  const isNoTrade = tradeRecommendation?.action === 'WAIT' || tradeRecommendation?.action === 'ERROR';
 
-  const hasValidData = entry !== undefined && stop_loss !== undefined;
-
-  if (!hasValidData) {
+  if (isNoTrade || !hasValidData) {
     return (
       <motion.div
         initial={{ scale: 0.9, opacity: 0 }}
@@ -43,10 +54,10 @@ export default function TradeSetupCard({
             <BarChart3 className="w-8 h-8 text-slate-400" />
           </motion.div>
           <p className="text-slate-600 font-medium mb-2">
-            No Trade Setup Recommended
+            {tradeRecommendation?.action === 'WAIT' ? 'Wait for Better Opportunity' : 'No Trade Setup'}
           </p>
-          <p className="text-slate-500 text-sm">
-            Market conditions don't support a clear trade setup at this time
+          <p className="text-slate-500 text-sm max-w-md mx-auto">
+            {tradeRecommendation?.reason || 'Market conditions do not support a clear trade setup at this time'}
           </p>
         </div>
       </motion.div>
@@ -60,30 +71,30 @@ export default function TradeSetupCard({
     }).format(price);
   };
 
-  const calculateRisk = () => Math.abs(entry! - stop_loss!);
-  const calculateReward = () => take_profit?.[0] ? Math.abs(take_profit[0] - entry!) : null;
+  const calculateRisk = () => Math.abs(tradeSetup.entry! - tradeSetup.stop_loss!);
+  const calculateReward = () => tradeSetup.take_profit?.[0] ? Math.abs(tradeSetup.take_profit[0] - tradeSetup.entry!) : null;
 
   const risk = calculateRisk();
   const reward = calculateReward();
-  const riskPercentage = ((risk / entry!) * 100).toFixed(2);
+  const riskPercentage = ((risk / tradeSetup.entry!) * 100).toFixed(2);
 
   const stats = [
     {
       icon: Target,
       label: "Entry Price",
-      value: formatPrice(entry!),
+      value: formatPrice(tradeSetup.entry!),
       color: "text-blue-600"
     },
     {
       icon: Shield,
       label: "Stop Loss",
-      value: formatPrice(stop_loss!),
+      value: formatPrice(tradeSetup.stop_loss!),
       color: "text-rose-600"
     },
     {
       icon: Trophy,
       label: "Risk/Reward",
-      value: risk_reward_ratio || 'N/A',
+      value: tradeSetup.risk_reward_ratio || 'N/A',
       color: "text-emerald-600"
     }
   ];
@@ -95,7 +106,13 @@ export default function TradeSetupCard({
       transition={{ duration: 0.5, delay: 0.2 }}
       className="bg-slate-50 rounded-lg border-2 border-slate-200 p-6 shadow-lg"
     >
-      <h3 className="text-2xl font-bold text-slate-800 mb-6">Trade Setup</h3>
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-2xl font-bold text-slate-800">Trade Setup</h3>
+        <div className="flex items-center gap-2 px-3 py-1 bg-blue-100 text-blue-700 rounded-full">
+          <DollarSign className="w-4 h-4" />
+          <span className="text-sm font-semibold">{tradeRecommendation?.action}</span>
+        </div>
+      </div>
 
       <div className="space-y-6">
         {/* Key Stats */}
@@ -116,7 +133,7 @@ export default function TradeSetupCard({
         </div>
 
         {/* Take Profit Levels */}
-        {take_profit && take_profit.length > 0 && (
+        {tradeSetup.take_profit && tradeSetup.take_profit.length > 0 && (
           <motion.div
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
@@ -128,7 +145,7 @@ export default function TradeSetupCard({
               Take Profit Levels
             </h4>
             <div className="space-y-2">
-              {take_profit.map((tp, index) => (
+              {tradeSetup.take_profit.map((tp, index) => (
                 <div key={index} className="flex justify-between items-center py-2 px-3 bg-emerald-50 rounded-lg">
                   <span className="text-sm font-medium text-slate-700">TP{index + 1}</span>
                   <div className="flex items-center gap-2">
@@ -164,6 +181,32 @@ export default function TradeSetupCard({
             </div>
           </div>
         </motion.div>
+
+        {/* Advanced Insights */}
+        {tradeSetup.advanced_insights && (
+          <motion.div
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.7 }}
+            className="bg-white rounded-2xl p-4 border border-slate-200 shadow-sm"
+          >
+            <h4 className="font-semibold text-slate-800 mb-3">Advanced Insights</h4>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="text-center">
+                <div className="text-2xl font-bold text-emerald-600">
+                  {tradeSetup.advanced_insights.bullish_signals || 0}
+                </div>
+                <div className="text-xs text-slate-500">Bullish Signals</div>
+              </div>
+              <div className="text-center">
+                <div className="text-2xl font-bold text-rose-600">
+                  {tradeSetup.advanced_insights.bearish_signals || 0}
+                </div>
+                <div className="text-xs text-slate-500">Bearish Signals</div>
+              </div>
+            </div>
+          </motion.div>
+        )}
 
         {/* Risk Warning */}
         <motion.div

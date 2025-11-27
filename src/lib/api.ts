@@ -23,7 +23,10 @@ async function fetchJson(url: string, options: RequestInit = {}) {
 export async function analyzeTrade(params: { pair: string }) {
   const { pair } = params;
   const q = new URLSearchParams({ pair });
-  return fetchJson(`${baseUrl}/analyze-holy-grail?${q.toString()}`, {
+  // return fetchJson(`${baseUrl}/analyze-holy-grail?${q.toString()}`, {
+  //   method: 'POST',
+  // });
+  return fetchJson(`${baseUrl}/analyze-holy-grail-advanced?${q.toString()}`, {
     method: 'POST',
   });
 }

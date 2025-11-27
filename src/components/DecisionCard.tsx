@@ -1,14 +1,23 @@
 "use client"
 
 import { motion } from 'framer-motion';
-import { TrendingUp, TrendingDown, Minus, Target } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, Target, Check, X, AlertTriangle } from 'lucide-react';
 
 interface DecisionCardProps {
-  decision: 'LONG' | 'SHORT' | 'NEUTRAL';
+  decision: 'LONG' | 'SHORT' | 'NEUTRAL' | 'NO_TRADE';
   confidence: number;
+  holyGrailConfidence?: number;
+  advancedConfidence?: number;
+  confirmationStatus?: string;
 }
 
-export default function DecisionCard({ decision, confidence }: DecisionCardProps) {
+export default function DecisionCard({ 
+  decision, 
+  confidence, 
+  holyGrailConfidence,
+  advancedConfidence,
+  confirmationStatus 
+}: DecisionCardProps) {
   const getDecisionConfig = () => {
     switch (decision) {
       case 'LONG':
@@ -28,11 +37,12 @@ export default function DecisionCard({ decision, confidence }: DecisionCardProps
           description: 'Bearish market conditions detected'
         };
       case 'NEUTRAL':
+      case 'NO_TRADE':
         return {
           color: 'from-amber-500 to-yellow-500',
           bgColor: 'bg-amber-50 border-amber-200',
           icon: Minus,
-          title: 'NEUTRAL',
+          title: 'NO TRADE',
           description: 'Market conditions unclear'
         };
       default:
@@ -40,14 +50,30 @@ export default function DecisionCard({ decision, confidence }: DecisionCardProps
           color: 'from-slate-500 to-gray-500',
           bgColor: 'bg-slate-50 border-slate-200',
           icon: Minus,
-          title: 'NEUTRAL',
-          description: 'Analysis in progress'
+          title: 'ANALYSIS',
+          description: 'Analysis complete'
         };
     }
   };
 
+  const getConfirmationIcon = () => {
+    switch (confirmationStatus) {
+      case 'confirmed':
+        return { icon: Check, color: 'text-emerald-600', bg: 'bg-emerald-100' };
+      case 'conflict':
+        return { icon: X, color: 'text-rose-600', bg: 'bg-rose-100' };
+      case 'unconfirmed':
+      case 'weak_confirmation':
+        return { icon: AlertTriangle, color: 'text-amber-600', bg: 'bg-amber-100' };
+      default:
+        return { icon: Minus, color: 'text-slate-600', bg: 'bg-slate-100' };
+    }
+  };
+
   const config = getDecisionConfig();
+  const confirmationConfig = getConfirmationIcon();
   const IconComponent = config.icon;
+  const ConfirmationIcon = confirmationConfig.icon;
 
   const getConfidenceLevel = () => {
     if (confidence >= 80) return { text: 'High Confidence', color: 'text-emerald-600' };
@@ -62,22 +88,32 @@ export default function DecisionCard({ decision, confidence }: DecisionCardProps
       initial={{ scale: 0.9, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ duration: 0.5 }}
-      className={`${config.bgColor} rounded-lg   border-2 p-6 shadow-lg`}
+      className={`${config.bgColor} rounded-lg border-2 p-6 shadow-lg`}
     >
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h3 className="text-2xl font-bold text-slate-800">Trade Decision</h3>
-          <p className="text-slate-600 mt-1">AI-powered market analysis</p>
+          <p className="text-slate-600 mt-1">Advanced Strategy Analysis</p>
         </div>
-        <motion.div
-          initial={{ scale: 0 }}
-          animate={{ scale: 1 }}
-          transition={{ delay: 0.2, type: "spring" }}
-          className={`w-14 h-14 bg-gradient-to-r ${config.color} rounded-2xl flex items-center justify-center shadow-lg`}
-        >
-          <IconComponent className="w-7 h-7 text-white" />
-        </motion.div>
+        <div className="flex items-center gap-2">
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, type: "spring" }}
+            className={`w-12 h-12 ${confirmationConfig.bg} rounded-2xl flex items-center justify-center`}
+          >
+            <ConfirmationIcon className={`w-6 h-6 ${confirmationConfig.color}`} />
+          </motion.div>
+          <motion.div
+            initial={{ scale: 0 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.3, type: "spring" }}
+            className={`w-14 h-14 bg-gradient-to-r ${config.color} rounded-2xl flex items-center justify-center shadow-lg`}
+          >
+            <IconComponent className="w-7 h-7 text-white" />
+          </motion.div>
+        </div>
       </div>
 
       {/* Decision */}
@@ -93,12 +129,50 @@ export default function DecisionCard({ decision, confidence }: DecisionCardProps
         <p className="text-slate-600 font-medium">{config.description}</p>
       </motion.div>
 
-      {/* Confidence Meter */}
+      {/* Confidence Breakdown */}
+      {(holyGrailConfidence !== undefined || advancedConfidence !== undefined) && (
+        <div className="mb-4 space-y-3">
+          {holyGrailConfidence !== undefined && (
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-slate-600">Holy Grail</span>
+              <div className="flex items-center gap-2">
+                <div className="w-16 bg-slate-200 rounded-full h-2">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${holyGrailConfidence}%` }}
+                    transition={{ duration: 1, delay: 0.4 }}
+                    className="h-2 rounded-full bg-gradient-to-r from-blue-500 to-cyan-500"
+                  />
+                </div>
+                <span className="text-sm font-semibold text-slate-700 w-8">{holyGrailConfidence}%</span>
+              </div>
+            </div>
+          )}
+          {advancedConfidence !== undefined && (
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-slate-600">Advanced</span>
+              <div className="flex items-center gap-2">
+                <div className="w-16 bg-slate-200 rounded-full h-2">
+                  <motion.div
+                    initial={{ width: 0 }}
+                    animate={{ width: `${advancedConfidence}%` }}
+                    transition={{ duration: 1, delay: 0.5 }}
+                    className="h-2 rounded-full bg-gradient-to-r from-purple-500 to-pink-500"
+                  />
+                </div>
+                <span className="text-sm font-semibold text-slate-700 w-8">{advancedConfidence}%</span>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* Overall Confidence */}
       <div className="space-y-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Target className="w-4 h-4 text-slate-600" />
-            <span className="text-sm font-semibold text-slate-700">Confidence Level</span>
+            <span className="text-sm font-semibold text-slate-700">Overall Confidence</span>
           </div>
           <span className={`text-sm font-bold ${confidenceLevel.color}`}>
             {confidenceLevel.text}
@@ -111,7 +185,7 @@ export default function DecisionCard({ decision, confidence }: DecisionCardProps
             <motion.div
               initial={{ width: 0 }}
               animate={{ width: `${confidence}%` }}
-              transition={{ duration: 1, delay: 0.5, ease: "easeOut" }}
+              transition={{ duration: 1, delay: 0.6, ease: "easeOut" }}
               className={`h-3 rounded-full bg-gradient-to-r ${config.color} relative overflow-hidden`}
             >
               <motion.div
@@ -149,22 +223,20 @@ export default function DecisionCard({ decision, confidence }: DecisionCardProps
         </div>
       </div>
 
-      {/* Recommendation */}
-      <motion.div
-        initial={{ y: 10, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.9 }}
-        className="mt-6 p-4 bg-white rounded-xl border border-slate-200"
-      >
-        <p className="text-sm text-slate-700 text-center font-medium">
-          {confidence >= 70
-            ? '💡 Strong signal - Consider taking position'
-            : confidence >= 50
-              ? '⚠️ Moderate signal - Exercise caution'
-              : '🔍 Weak signal - Wait for better opportunity'
-          }
-        </p>
-      </motion.div>
+      {/* Confirmation Status */}
+      {confirmationStatus && (
+        <motion.div
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.9 }}
+          className="mt-4 p-3 bg-white rounded-xl border border-slate-200"
+        >
+          <div className="flex items-center gap-2">
+            <ConfirmationIcon className={`w-4 h-4 ${confirmationConfig.color}`} />
+            <span className="text-sm font-semibold text-slate-700 capitalize">{confirmationStatus}</span>
+          </div>
+        </motion.div>
+      )}
     </motion.div>
   );
 }
